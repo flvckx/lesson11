@@ -41,8 +41,28 @@
 - (void) viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
 
-    dispatch_queue_t downloadQueue = dispatch_queue_create("image loader", NULL);
-    dispatch_async(downloadQueue, ^{
+//    dispatch_queue_t downloadQueue = dispatch_queue_create("image loader", NULL);
+//    dispatch_async(downloadQueue, ^{
+//        double loadTotalTime = 0.0;
+//        for (int i = 0; i < [self.pictures count]; i++) {
+//            NSDate *loadStart = [NSDate date];
+//            NSData *imageData = [NSData dataWithContentsOfURL:[NSURL URLWithString:self.pictures[i]]]; // long time!
+//            NSDate *loadEnd = [NSDate date];
+//            dispatch_async(dispatch_get_main_queue(), ^ {
+//                UIImage *image = [UIImage imageWithData:imageData];
+//                self.imageView.image = image;
+//                self.imageView.frame = CGRectMake(0, 0, image.size.width, image.size.height);
+//            });
+//            loadTotalTime += [loadEnd timeIntervalSinceDate:loadStart];
+//            NSLog(@"load time: %f", [loadEnd timeIntervalSinceDate:loadStart]);
+//            [NSThread sleepForTimeInterval:2.0];
+//        }
+//        NSLog(@"entire time for loading: %f", loadTotalTime);
+//    });
+//    //dispatch_release(downloadQueue);
+//    
+    
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
         double loadTotalTime = 0.0;
         for (int i = 0; i < [self.pictures count]; i++) {
             NSDate *loadStart = [NSDate date];
@@ -54,12 +74,11 @@
                 self.imageView.frame = CGRectMake(0, 0, image.size.width, image.size.height);
             });
             loadTotalTime += [loadEnd timeIntervalSinceDate:loadStart];
-            NSLog(@"load time: %f", [loadEnd timeIntervalSinceDate:loadStart]);
-            [NSThread sleepForTimeInterval:2.0];
+            //NSLog(@"load time: %f", [loadEnd timeIntervalSinceDate:loadStart]);
+            [NSThread sleepForTimeInterval:0.3];
         }
         NSLog(@"entire time for loading: %f", loadTotalTime);
     });
-    //dispatch_release(downloadQueue);
 }
 
 @end
